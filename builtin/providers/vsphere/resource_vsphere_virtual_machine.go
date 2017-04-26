@@ -1465,6 +1465,9 @@ func addCdrom(client *govmomi.Client, vm *object.VirtualMachine, datacenter *obj
 // buildNetworkDevice builds VirtualDeviceConfigSpec for Network Device.
 func buildNetworkDevice(f *find.Finder, label, adapterType string, macAddress string) (*types.VirtualDeviceConfigSpec, error) {
 	network, err := f.Network(context.TODO(), "*"+label)
+	if _, ok := err.(*find.MultipleFoundError); ok {
+		network, err = f.Network(context.TODO(), label)
+	}
 	if err != nil {
 		return nil, err
 	}
